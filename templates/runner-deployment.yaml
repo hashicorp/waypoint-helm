@@ -57,6 +57,12 @@ spec:
           env:
             - name: HOME
               value: /home/waypoint
+            - name: WAYPOINT_SERVER_ADDR
+              value: {{ template "waypoint.fullname" . }}-server:9701
+            - name: WAYPOINT_SERVER_TLS
+              value: "true"
+            - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
+              value: "true"
           volumeMounts:
             - name: home
               mountPath: /home/waypoint
