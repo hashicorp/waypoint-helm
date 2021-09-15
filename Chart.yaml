@@ -1,0 +1,15 @@
+apiVersion: v2
+name: waypoint
+description: Unofficial Helm Chart for HashiCorp Waypoint
+type: application
+version: 0.1.0
+appVersion: "0.6.0-alpha"
+
+# We want Kube 1.20+ so that on-demand runners can be cleaned up properly.
+# This uses the Job expiration fields that was introduced in 1.20. Without
+# this, thousands of dead pods will pollute the Kubernetes server.
+kubeVersion: ">= 1.20.0"
+
+home: https://www.waypointproject.io
+sources:
+  - https://github.com/hashicorp/waypoint

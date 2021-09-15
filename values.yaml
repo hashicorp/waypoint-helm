@@ -1,0 +1,54 @@
+server:
+  # If not set to true, Waypoint server will not be installed.
+  enabled: true
+
+  # The image to use for the installation.
+  #
+  # NOTE(mitchellh): This is currently set to our alpha image which we do
+  # NOT want in the final Helm chart if we release this publicly. But we want
+  # to build the Helm chart around on-demand runners which require nightly.
+  image:
+    repository: "ghcr.io/hashicorp/waypoint/alpha"
+    tag: "latest"
+    pullPolicy: Always
+
+  # This configures the Waypoint Statefulset to create a PVC for data storage.
+  storage:
+    # Size of the PVC created
+    size: 10Gi
+    # Name of the storage class to use.  If null it will use the
+    # configured default Storage Class.
+    storageClass: null
+    # Annotations to apply to the PVC
+    annotations: {}
+
+  # Priority class for server pods
+  priorityClassName: ""
+
+  # Extra labels to attach to the server pods
+  # This should be a YAML map of the labels to apply to the server pods
+  extraLabels: {}
+
+  # Extra annotations to attach to the server pods
+  # This can either be YAML or a YAML-formatted multi-line templated string map
+  # of the annotations to apply to the server pods
+  annotations: {}
+
+  # Definition of the serviceAccount used to run Waypoint.
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+    # Extra annotations for the serviceAccount definition. This can either be
+    # YAML or a YAML-formatted multi-line templated string map of the
+    # annotations to apply to the serviceAccount.
+    annotations: {}
+
+  # Settings for the statefulSet used to run Waypoint.
+  statefulSet:
+    # Extra annotations for the statefulSet. This can either be YAML or a
+    # YAML-formatted multi-line templated string map of the annotations to apply
+    # to the statefulSet.
+    annotations: {}
