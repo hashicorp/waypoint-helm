@@ -60,3 +60,31 @@ server:
     # YAML-formatted multi-line templated string map of the annotations to apply
     # to the statefulSet.
     annotations: {}
+
+# Values that configure the Waypoint UI.
+ui:
+  # Configure the service for the Waypoint UI.
+  service:
+    # This will enable/disable registering a Kubernetes Service for the UI.
+    enabled: true
+
+    # The service type to register.
+    # @type: string
+    type: LoadBalancer
+
+    # Annotations to apply to the UI service.
+    #
+    # Example:
+    #
+    # ```yaml
+    # annotations: |
+    #   'annotation-key': annotation-value
+    # ```
+    # @type: string
+    annotations: null
+
+    # Additional ServiceSpec values
+    # This should be a multi-line string mapping directly to a Kubernetes
+    # ServiceSpec object.
+    # @type: string
+    additionalSpec: null
