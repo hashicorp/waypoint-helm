@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "waypoint.fullname" . }}
+  name: {{ template "waypoint.fullname" . }}-server
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "waypoint.name" . }}
@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- template "waypoint.statefulSet.annotations" . }}
 spec:
-  serviceName: {{ template "waypoint.fullname" . }}-internal
+  serviceName: {{ template "waypoint.fullname" . }}-server
   replicas: 1 # Waypoint doesn't support horizontal scaling today
   selector:
     matchLabels:

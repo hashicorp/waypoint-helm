@@ -105,3 +105,43 @@ Sets extra statefulset annotations
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "waypoint.runner.serviceAccount.name" -}}
+{{- if .Values.runner.serviceAccount.create -}}
+    {{ default (printf "%s-runner" (include "waypoint.fullname" .)) .Values.runner.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.runner.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Sets extra service account annotations
+*/}}
+{{- define "waypoint.runner.serviceAccount.annotations" -}}
+  {{- if .Values.runner.serviceAccount.annotations }}
+  annotations:
+    {{- $tp := typeOf .Values.runner.serviceAccount.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.runner.serviceAccount.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.runner.serviceAccount.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Sets extra server Service annotations
+*/}}
+{{- define "waypoint.service.annotations" -}}
+  {{- if .Values.server.service.annotations }}
+    {{- $tp := typeOf .Values.server.service.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.server.service.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.server.service.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}

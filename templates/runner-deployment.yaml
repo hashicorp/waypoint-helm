@@ -1,0 +1,71 @@
+{{- if (eq (.Values.runner.enabled | toString) "true") }}
+# Deployment to run the Waypoint static runner.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "waypoint.fullname" . }}-runner
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "waypoint.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- template "waypoint.statefulSet.annotations" . }}
+spec:
+  replicas: 1 # We only want 1 static runner
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "waypoint.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      component: runner
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: {{ template "waypoint.chart" . }}
+        app.kubernetes.io/name: {{ template "waypoint.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        component: runner
+        {{- if  .Values.runner.extraLabels -}}
+          {{- toYaml .Values.runner.extraLabels | nindent 8 -}}
+        {{- end -}}
+      {{ template "waypoint.annotations" . }}
+    spec:
+      {{- if .Values.runner.priorityClassName }}
+      priorityClassName: {{ .Values.runner.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ template "waypoint.runner.serviceAccount.name" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
+      volumes:
+        - name: home
+          emptyDir: {}
+      containers:
+        - name: waypoint
+          resources:
+{{ toYaml .Values.runner.resources | indent 12 }}
+          image: {{ .Values.runner.image.repository }}:{{ .Values.runner.image.tag | default "latest" }}
+          imagePullPolicy: {{ .Values.runner.image.pullPolicy }}
+          command:
+          - "waypoint"
+          args:
+          - "runner"
+          - "agent"
+          - "-vvv"
+          - "-liveness-tcp-addr=:1234"
+          env:
+            - name: HOME
+              value: /home/waypoint
+          volumeMounts:
+            - name: home
+              mountPath: /home/waypoint
+          livenessProbe:
+            tcpSocket:
+              port: 1234
+            failureThreshold: 2
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 5
+{{ end }}

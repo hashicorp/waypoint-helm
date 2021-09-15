@@ -61,6 +61,71 @@ server:
     # to the statefulSet.
     annotations: {}
 
+  # Configures the headless service to be used by the statefulset.
+  service:
+    # Extra annotations for the service definition. This can either be YAML or a
+    # YAML-formatted multi-line templated string map of the annotations to apply
+    # to the service.
+    annotations: {}
+
+runner:
+  # If not set to true, the Waypoint runner will not be installed. At least
+  # one static runner must exist in a Waypoint cluster for on-demand runners
+  # to work properly. If this is false, on-demand runners will also not
+  # be configured for this cluster.
+  enabled: true
+
+  # The image to use for the installation.
+  #
+  # NOTE(mitchellh): This is currently set to our alpha image which we do
+  # NOT want in the final Helm chart if we release this publicly. But we want
+  # to build the Helm chart around on-demand runners which require nightly.
+  image:
+    repository: "ghcr.io/hashicorp/waypoint/alpha"
+    tag: "latest"
+    pullPolicy: Always
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    #  limits:
+    #    memory: 256Mi
+    #    cpu: 250m
+
+  # Priority class for server pods
+  priorityClassName: ""
+
+  # Extra labels to attach to the server pods
+  # This should be a YAML map of the labels to apply to the server pods
+  extraLabels: {}
+
+  # Extra annotations to attach to the server pods
+  # This can either be YAML or a YAML-formatted multi-line templated string map
+  # of the annotations to apply to the server pods
+  annotations: {}
+
+  # Definition of the serviceAccount used to by Waypoint runners. This will
+  # be shared by both the static runner and the on-demand runner that is
+  # initially configured with the chart install.
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+    # Extra annotations for the serviceAccount definition. This can either be
+    # YAML or a YAML-formatted multi-line templated string map of the
+    # annotations to apply to the serviceAccount.
+    annotations: {}
+
+  # Settings for the deployment used to run Waypoint static runners.
+  deployment:
+    # Extra annotations for the deployment. This can either be YAML or a
+    # YAML-formatted multi-line templated string map of the annotations to apply
+    # to the deployment.
+    annotations: {}
+
 # Values that configure the Waypoint UI.
 ui:
   # Configure the service for the Waypoint UI.
