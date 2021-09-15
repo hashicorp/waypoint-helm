@@ -62,6 +62,21 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Sets extra service account annotations
+*/}}
+{{- define "waypoint.serviceAccount.annotations" -}}
+  {{- if .Values.server.serviceAccount.annotations }}
+  annotations:
+    {{- $tp := typeOf .Values.server.serviceAccount.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.server.serviceAccount.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.server.serviceAccount.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
+{{/*
 Sets extra pod annotations
 */}}
 {{- define "waypoint.annotations" -}}

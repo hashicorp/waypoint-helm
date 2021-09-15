@@ -12,7 +12,6 @@ metadata:
   {{- template "waypoint.statefulSet.annotations" . }}
 spec:
   serviceName: {{ template "waypoint.fullname" . }}-internal
-  podManagementPolicy: Parallel
   replicas: 1 # Waypoint doesn't support horizontal scaling today
   selector:
     matchLabels:
@@ -36,13 +35,18 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ template "waypoint.serviceAccount.name" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
       volumes:
-        {{ template "waypoint.volumes" . }}
         - name: home
           emptyDir: {}
       containers:
         - name: waypoint
-          {{ template "waypoint.resources" . }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
           image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
@@ -57,12 +61,12 @@ spec:
           - "-listen-http=0.0.0.0:9702"
           env:
             - name: HOME
-              value: /data
+              value: /home/waypoint
           volumeMounts:
             - name: data-{{ .Release.Namespace }}
               mountPath: /data
             - name: home
-              mountPath: /home/vault
+              mountPath: /home/waypoint
           ports:
             - containerPort: 9701
               name: grpc
@@ -72,7 +76,7 @@ spec:
             httpGet:
               path: "/"
               port: http
-              scheme: https
+              scheme: HTTPS
             failureThreshold: 2
             initialDelaySeconds: 5
             periodSeconds: 3

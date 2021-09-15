@@ -22,6 +22,14 @@ server:
     # Annotations to apply to the PVC
     annotations: {}
 
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    #  limits:
+    #    memory: 256Mi
+    #    cpu: 250m
+
   # Priority class for server pods
   priorityClassName: ""
 
