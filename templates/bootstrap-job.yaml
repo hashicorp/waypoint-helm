@@ -90,6 +90,22 @@ spec:
           # static runner; dynamic tokens are generated for on-demand runners.
           echo "Generating our static runner token"
           waypoint user token --expires-in=0 | tee /data/runner-token
+
+          # Bootstrap ODR
+          set -x
+          mkdir -p /tmp
+          cat <<EOF >/tmp/plugin-config.json
+          {
+            "service_account": "{{ template "waypoint.runner.serviceAccount.name" }}",
+            "image_pull_policy": "{{ .Values.runner.odrImage.pullPolicy }}"
+          }
+          EOF
+          echo "Configuring on-demand runner for Kubernetes"
+          waypoint runner on-demand set \
+            -default \
+            -oci-url={{ .Values.runner.odrImage.repository }}:{{ .Values.runner.odrImage.tag }} \
+            -plugin-type=kubernetes \
+            -plugin-config=/tmp/plugin-config.json
         env:
           - name: WAYPOINT_SERVER_ADDR
             value: {{ template "waypoint.fullname" . }}-server:9701
