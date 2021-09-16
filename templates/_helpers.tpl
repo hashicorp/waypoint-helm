@@ -159,3 +159,30 @@ Sets extra server Service annotations
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "waypoint.bootstrap.serviceAccount.name" -}}
+{{- if .Values.bootstrap.serviceAccount.create -}}
+    {{ default (printf "%s-bootstrap" (include "waypoint.fullname" .)) .Values.bootstrap.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.bootstrap.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Sets extra service account annotations
+*/}}
+{{- define "waypoint.bootstrap.serviceAccount.annotations" -}}
+  {{- if .Values.bootstrap.serviceAccount.annotations }}
+  annotations:
+    {{- $tp := typeOf .Values.bootstrap.serviceAccount.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.bootstrap.serviceAccount.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.bootstrap.serviceAccount.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+

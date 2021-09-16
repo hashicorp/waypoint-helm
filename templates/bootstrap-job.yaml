@@ -9,11 +9,6 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ template "waypoint.chart" . }}
-  annotations:
-    # Run this as a Helm hook. We run on upgrade too because the
-    # server may have just been installed.
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "-5"
 spec:
   backoffLimit: 1
   activeDeadlineSeconds: 100
@@ -27,8 +22,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         component: bootstrap
     spec:
-      # TODO: make a dedicated service account for this
-      serviceAccountName: {{ template "waypoint.runner.serviceAccount.name" . }}
+      serviceAccountName: {{ template "waypoint.bootstrap.serviceAccount.name" . }}
       restartPolicy: Never
       securityContext:
         runAsNonRoot: true
