@@ -107,6 +107,13 @@ Sets extra statefulset annotations
 {{- end -}}
 
 {{/*
+Sets extra statefulset annotations
+*/}}
+{{- define "waypoint.serverTokenSecret" -}}
+{{- include "waypoint.fullname" . -}}-server-token
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "waypoint.runner.serviceAccount.name" -}}

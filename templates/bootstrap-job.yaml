@@ -1,0 +1,133 @@
+{{- if (eq (.Values.server.enabled | toString) "true") }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "waypoint.fullname" . }}-bootstrap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "waypoint.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "waypoint.chart" . }}
+  annotations:
+    # Run this as a Helm hook. We run on upgrade too because the
+    # server may have just been installed.
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 100
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      name: {{ template "waypoint.fullname" . }}-bootstrap
+      labels:
+        helm.sh/chart: {{ template "waypoint.chart" . }}
+        app.kubernetes.io/name: {{ template "waypoint.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        component: bootstrap
+    spec:
+      # TODO: make a dedicated service account for this
+      serviceAccountName: {{ template "waypoint.runner.serviceAccount.name" . }}
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
+      volumes:
+        - name: home
+          emptyDir: {}
+        - name: share
+          emptyDir: {}
+        - name: token
+          secret:
+            secretName: {{ template "waypoint.serverTokenSecret" . }}
+      initContainers:
+      - name: check-done
+        image: "busybox"
+        command:
+        - /bin/sh
+        - "-ec"
+        - |
+          echo "Checking if Waypoint is already bootstrapped or not."
+          if [ -s "/secret/token" ]; then
+            echo "Waypoint already bootstrapped. Doing nothing."
+            touch /data/skip
+          else
+            echo "Waypoint is not bootstrapped."
+          fi
+        volumeMounts:
+          - name: share
+            mountPath: /data
+          - name: token
+            mountPath: /secret
+            readOnly: true
+      - name: bootstrap
+        image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}
+        imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+        command:
+        - /bin/sh
+        - "-ec"
+        - |
+          set -o pipefail
+
+          if [ -f /data/skip ]; then
+            exit 0
+          fi
+
+          until nslookup {{ template "waypoint.fullname" . }}-server.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for waypoint; sleep 2; done
+
+          echo "Bootstrapping Waypoint"
+          waypoint server bootstrap | tee /data/bootstrap-token
+        env:
+          - name: WAYPOINT_SERVER_ADDR
+            value: {{ template "waypoint.fullname" . }}-server:9701
+          - name: WAYPOINT_SERVER_TLS
+            value: "true"
+          - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
+            value: "true"
+        volumeMounts:
+          - name: share
+            mountPath: /data
+          - name: token
+            mountPath: /secret
+            readOnly: true
+      - name: persist
+        image: "bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}"
+        command:
+        - /bin/bash
+        - "-ec"
+        - |
+          set -o pipefail
+
+          if [ -f /data/skip ]; then
+            exit 0
+          fi
+
+          if [ ! -f /data/bootstrap-token ]; then
+            echo "No bootstrap token found. Error."
+            exit 1
+          fi
+
+          echo "Saving root token"
+          B64_TOKEN=$(cat /data/bootstrap-token | base64 -w 0)
+          kubectl patch secret {{ template "waypoint.serverTokenSecret" . }} \
+            -v=1 \
+            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}"
+        env:
+          - name: HOME
+            value: /home
+        volumeMounts:
+          - name: home
+            mountPath: /home
+          - name: share
+            mountPath: /data
+      containers:
+      - name: noop
+        image: "busybox"
+        command:
+        - /bin/sh
+        - "-ec"
+        - "echo Finished."
+{{ end }}
