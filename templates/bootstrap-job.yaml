@@ -76,10 +76,20 @@ spec:
             exit 0
           fi
 
+          # Wait for waypoint to become available.
           until nslookup {{ template "waypoint.fullname" . }}-server.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for waypoint; sleep 2; done
 
+          # Get the bootstrap token
           echo "Bootstrapping Waypoint"
           waypoint server bootstrap | tee /data/bootstrap-token
+
+          # Set our token
+          export WAYPOINT_SERVER_TOKEN=$(cat /data/bootstrap-token)
+
+          # Get the token for the static runner. This is only used for the
+          # static runner; dynamic tokens are generated for on-demand runners.
+          echo "Generating our static runner token"
+          waypoint user token --expires-in=0 | tee /data/runner-token
         env:
           - name: WAYPOINT_SERVER_ADDR
             value: {{ template "waypoint.fullname" . }}-server:9701
@@ -110,11 +120,17 @@ spec:
             exit 1
           fi
 
+          echo "Saving runner token"
+          B64_TOKEN=$(cat /data/runner-token | base64 -w 0)
+          kubectl patch secret {{ template "waypoint.runnerTokenSecret" . }} \
+            -v=1 \
+            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"
+
           echo "Saving root token"
           B64_TOKEN=$(cat /data/bootstrap-token | base64 -w 0)
           kubectl patch secret {{ template "waypoint.serverTokenSecret" . }} \
             -v=1 \
-            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}"
+            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"
         env:
           - name: HOME
             value: /home

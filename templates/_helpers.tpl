@@ -107,10 +107,17 @@ Sets extra statefulset annotations
 {{- end -}}
 
 {{/*
-Sets extra statefulset annotations
+Sets the server token secret name.
 */}}
 {{- define "waypoint.serverTokenSecret" -}}
 {{- include "waypoint.fullname" . -}}-server-token
+{{- end -}}
+
+{{/*
+Sets the runner token secret name.
+*/}}
+{{- define "waypoint.runnerTokenSecret" -}}
+{{- include "waypoint.fullname" . -}}-runner-token
 {{- end -}}
 
 {{/*
