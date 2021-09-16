@@ -121,13 +121,13 @@ spec:
           fi
 
           echo "Saving runner token"
-          B64_TOKEN=$(cat /data/runner-token | base64 -w 0)
+          B64_TOKEN=$(cat /data/runner-token | tr -d '\n' | base64 -w 0)
           kubectl patch secret {{ template "waypoint.runnerTokenSecret" . }} \
             -v=1 \
             -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"
 
           echo "Saving root token"
-          B64_TOKEN=$(cat /data/bootstrap-token | base64 -w 0)
+          B64_TOKEN=$(cat /data/bootstrap-token | tr -d '\n' | base64 -w 0)
           kubectl patch secret {{ template "waypoint.serverTokenSecret" . }} \
             -v=1 \
             -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"

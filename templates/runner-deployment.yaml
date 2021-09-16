@@ -41,6 +41,24 @@ spec:
       volumes:
         - name: home
           emptyDir: {}
+        - name: token
+          secret:
+            secretName: {{ template "waypoint.runnerTokenSecret" . }}
+      initContainers:
+      - name: wait-for-token
+        image: "busybox"
+        command:
+        - /bin/sh
+        - "-ec"
+        - |
+          until [ -s "/secret/token" ]; do
+            echo "Waiting for runner token secret to be populated..."
+            sleep 2
+          done
+        volumeMounts:
+          - name: token
+            mountPath: /secret
+            readOnly: true
       containers:
         - name: waypoint
           resources:
@@ -63,6 +81,11 @@ spec:
               value: "true"
             - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
               value: "true"
+            - name: WAYPOINT_SERVER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "waypoint.runnerTokenSecret" . }}
+                  key: token
           volumeMounts:
             - name: home
               mountPath: /home/waypoint
