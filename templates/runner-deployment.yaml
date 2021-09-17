@@ -44,6 +44,7 @@ spec:
         - name: token
           secret:
             secretName: {{ template "waypoint.runnerTokenSecret" . }}
+      {{- include "imagePullSecrets" . | nindent 6 }}
       initContainers:
       - name: wait-for-token
         image: "busybox"

@@ -1,3 +1,10 @@
+global:
+  # Image pull secret to use for registry authentication.
+  # Alternatively, the value may be specified as an array of strings.
+  imagePullSecret: ""
+  # imagePullSecrets:
+  #   - name: image-pull-secret
+
 server:
   # If not set to true, Waypoint server will not be installed.
   enabled: true

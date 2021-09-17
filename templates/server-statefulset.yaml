@@ -43,6 +43,7 @@ spec:
       volumes:
         - name: home
           emptyDir: {}
+      {{- include "imagePullSecrets" . | nindent 6 }}
       containers:
         - name: waypoint
           resources:

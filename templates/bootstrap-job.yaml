@@ -91,7 +91,8 @@ spec:
           cat <<EOF >/tmp/plugin-config.json
           {
             "service_account": "{{ template "waypoint.runner.serviceAccount.name" }}",
-            "image_pull_policy": "{{ .Values.runner.odrImage.pullPolicy }}"
+            "image_pull_policy": "{{ .Values.runner.odrImage.pullPolicy }}",
+            "image_secret": "{{ .Values.global.imagePullSecret }}"
           }
           EOF
           echo "Configuring on-demand runner for Kubernetes"

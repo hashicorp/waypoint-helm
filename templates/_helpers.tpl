@@ -186,3 +186,13 @@ Sets extra service account annotations
   {{- end }}
 {{- end -}}
 
+{{/*
+imagePullSecrets generates pull secrets from either string or map values.
+A map value must be indexable by the key 'name'.
+*/}}
+{{- define "imagePullSecrets" -}}
+{{- with .Values.global.imagePullSecret -}}
+imagePullSecrets:
+  - name: {{ . }}
+{{- end -}}
+{{- end -}}
