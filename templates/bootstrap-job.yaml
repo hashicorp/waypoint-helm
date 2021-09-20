@@ -29,132 +29,39 @@ spec:
         runAsUser: 100
         runAsGroup: 1000
         fsGroup: 1000
+      {{- include "imagePullSecrets" . | nindent 6 }}
       volumes:
         - name: home
           emptyDir: {}
-        - name: share
-          emptyDir: {}
-        - name: token
-          secret:
-            secretName: {{ template "waypoint.serverTokenSecret" . }}
-      initContainers:
-      - name: check-done
-        image: "busybox"
-        command:
-        - /bin/sh
-        - "-ec"
-        - |
-          echo "Checking if Waypoint is already bootstrapped or not."
-          if [ -s "/secret/token" ]; then
-            echo "Waypoint already bootstrapped. Doing nothing."
-            touch /data/skip
-          else
-            echo "Waypoint is not bootstrapped."
-          fi
-        volumeMounts:
-          - name: share
-            mountPath: /data
-          - name: token
-            mountPath: /secret
-            readOnly: true
-      - name: bootstrap
-        image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}
-        imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-        command:
-        - /bin/sh
-        - "-ec"
-        - |
-          set -o pipefail
-
-          if [ -f /data/skip ]; then
-            exit 0
-          fi
-
-          # Wait for waypoint to become available.
-          until nslookup {{ template "waypoint.fullname" . }}-server.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for waypoint; sleep 2; done
-
-          # Get the bootstrap token
-          echo "Bootstrapping Waypoint"
-          waypoint server bootstrap | tee /data/bootstrap-token
-
-          # Set our token
-          export WAYPOINT_SERVER_TOKEN=$(cat /data/bootstrap-token)
-
-          # Get the token for the static runner. This is only used for the
-          # static runner; dynamic tokens are generated for on-demand runners.
-          echo "Generating our static runner token"
-          waypoint user token --expires-in=0 | tee /data/runner-token
-
-          # Bootstrap ODR
-          set -x
-          mkdir -p /tmp
-          cat <<EOF >/tmp/plugin-config.json
-          {
-            "service_account": "{{ template "waypoint.runner.serviceAccount.name" }}",
-            "image_pull_policy": "{{ .Values.runner.odrImage.pullPolicy }}",
-            "image_secret": "{{ .Values.global.imagePullSecret }}"
-          }
-          EOF
-          echo "Configuring on-demand runner for Kubernetes"
-          waypoint runner on-demand set \
-            -default \
-            -oci-url={{ .Values.runner.odrImage.repository }}:{{ .Values.runner.odrImage.tag }} \
-            -plugin-type=kubernetes \
-            -plugin-config=/tmp/plugin-config.json
-        env:
-          - name: WAYPOINT_SERVER_ADDR
-            value: {{ template "waypoint.fullname" . }}-server:9701
-          - name: WAYPOINT_SERVER_TLS
-            value: "true"
-          - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
-            value: "true"
-        volumeMounts:
-          - name: share
-            mountPath: /data
-          - name: token
-            mountPath: /secret
-            readOnly: true
-      - name: persist
-        image: "bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}"
-        command:
-        - /bin/bash
-        - "-ec"
-        - |
-          set -o pipefail
-
-          if [ -f /data/skip ]; then
-            exit 0
-          fi
-
-          if [ ! -f /data/bootstrap-token ]; then
-            echo "No bootstrap token found. Error."
-            exit 1
-          fi
-
-          echo "Saving runner token"
-          B64_TOKEN=$(cat /data/runner-token | tr -d '\n' | base64 -w 0)
-          kubectl patch secret {{ template "waypoint.runnerTokenSecret" . }} \
-            -v=1 \
-            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"
-
-          echo "Saving root token"
-          B64_TOKEN=$(cat /data/bootstrap-token | tr -d '\n' | base64 -w 0)
-          kubectl patch secret {{ template "waypoint.serverTokenSecret" . }} \
-            -v=1 \
-            -p="{\"data\":{\"token\": \"${B64_TOKEN}\"}}"
-        env:
-          - name: HOME
-            value: /home
-        volumeMounts:
-          - name: home
-            mountPath: /home
-          - name: share
-            mountPath: /data
       containers:
-      - name: noop
-        image: "busybox"
-        command:
-        - /bin/sh
-        - "-ec"
-        - "echo Finished."
+        - name: waypoint-bootstrap
+          resources:
+          image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          command:
+          - "waypoint"
+          args:
+          - "k8s"
+          - "bootstrap"
+          - "-vvv"
+          - "-root-token-secret={{ template "waypoint.serverTokenSecret" . }}"
+          - "-runner-token-secret={{ template "waypoint.runnerTokenSecret" . }}"
+          - "-odr-image={{ .Values.runner.odrImage.repository }}:{{ .Values.runner.odrImage.tag }}"
+          - "-odr-service-account={{ template "waypoint.runner.serviceAccount.name" . }}"
+          - "-odr-image-pull-policy={{ .Values.runner.odrImage.pullPolicy }}"
+          - "-advertise-service={{ template "waypoint.fullname" . }}-ui"
+          - "-advertise-tls=true"
+          - "-advertise-tls-skip-verify=true"
+          env:
+            - name: HOME
+              value: /home/waypoint
+            - name: WAYPOINT_SERVER_ADDR
+              value: {{ template "waypoint.fullname" . }}-server:9701
+            - name: WAYPOINT_SERVER_TLS
+              value: "true"
+            - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
+              value: "true"
+          volumeMounts:
+            - name: home
+              mountPath: /home
 {{ end }}

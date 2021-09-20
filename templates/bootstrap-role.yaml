@@ -11,4 +11,10 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get", "patch"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get"]
 {{- end }}
