@@ -30,7 +30,7 @@ The versions required are:
 $ helm repo add hashicorp https://helm.releases.hashicorp.com
 "hashicorp" has been added to your repositories
 
-$ helm install vault hashicorp/waypoint
+$ helm install waypoint hashicorp/waypoint
 ...
 ```
 
