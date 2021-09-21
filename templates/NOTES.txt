@@ -1,8 +1,16 @@
 
 Thank you for installing HashiCorp Waypoint!
 
-Your release is named {{ .Release.Name }}. To learn more about the release, try:
+Waypoint will take a few minutes to bootstrap. Once it is bootstrapped, you
+can log in to the local CLI by running the following command. If this command
+fails, please wait a few more minutes and try again.
 
-  $ helm status {{ .Release.Name }}
-  $ helm get manifest {{ .Release.Name }}
+  $ waypoint login -from-kubernetes
+
+Once logged in, you can use the "waypoint ui" command to open the web interface.
+Alternately, you can visit the address of the load balancer service configured.
+
+If anything fails to configure properly you can uninstall this release:
+
+  $ helm uninstall {{ .Release.Name }}
 
