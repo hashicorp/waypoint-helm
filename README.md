@@ -27,17 +27,29 @@ The versions required are:
 #### Install the Helm Chart
 
 ```sh
-$ helm install waypoint ./
+$ helm repo add hashicorp https://helm.releases.hashicorp.com
+"hashicorp" has been added to your repositories
+
+$ helm install vault hashicorp/waypoint
 ...
 ```
 
-**Note:** we will support the official HashiCorp Helm chart index soon.
+#### Log In (Waypoint CLI)
 
-#### Wait for Waypoint to Initialize
+From the same machine that ran the `helm install`, run the following
+command to perform an initial login to the newly installed Waypoint server:
 
-It takes anywhere from 15 seconds to a few minutes for Waypoint to
-finish bootstrapping. I recommend just waiting for the load balancer
-to be ready with an IP:
+```sh
+$ waypoint login -from-kubernetes
+```
+
+You can then run `waypoint ui` to open the web UI.
+
+#### Log In (Manual)
+
+If you do not want to use the Waypoint CLI, you can use `kubectl` or a
+Kubernetes dashboard to find the Waypoint server address and token. First,
+wait for the service to become ready:
 
 ```sh
 # Not ready yet
@@ -53,8 +65,6 @@ waypoint-ui   LoadBalancer   10.245.138.80   143.244.211.64   443:30836/TCP,9701
 
 Copy the external IP. In this example it is `143.244.211.64`.
 
-#### Log In
-
 The Helm chart puts the initial token in the `waypoint-server-token`
 Kubernetes Secret. Once you read this token, you can delete or rotate it
 if you want.
@@ -66,12 +76,4 @@ $ kubectl get secret waypoint-server-token -o jsonpath="{.data.token}" | base64 
 3K4wQUdH1dfFHsFkYxmzzMHimJj6UE9tH4PhBQcLK9WACNmxHwmEJhqrvVGwVxaT2KUNtFUCAr7Wd3ci5NmFm6sRuKutzsn7CGs71ip2bnEywfEyxt7eaBvsn3kbCMjKzWPrEonR4Q7jgt6k⏎
 ```
 
-Log in:
-
-```sh
-$ waypoint login -token=<token> <external ip>:9701
-Authentication complete!
-```
-
-**Important:** Note the port `9701` we add to the IP. This is so that we
-target the gRPC port.
+You can now use this token to log in.
