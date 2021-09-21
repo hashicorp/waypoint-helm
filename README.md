@@ -1,10 +1,26 @@
 # Waypoint Helm Chart
 
-**Work-In-Progress.**
+This repository contains the official HashiCorp Helm chart for installing
+and configuring Waypoint on Kubernetes.
 
-This is a Waypoint Helm chart that brings up Waypoint nightly on Kubernetes.
-See the `values.yaml` for values you can set for configuration. Because
-this is WIP we don't publish this yet.
+**This is pre-release.** The recommended way today to install Waypoint
+is using the `waypoint install` subcommand. This Helm chart only works with
+Waypoint 0.6+ (unreleased). We will document this Helm chart in more detail
+once it is officially released.
+
+## Prerequisites
+
+To use the charts here, [Helm](https://helm.sh/) must be configured for your
+Kubernetes cluster. Setting up Kubernetes and Helm is outside the scope of
+this README. Please refer to the Kubernetes and Helm documentation.
+
+The versions required are:
+
+  * **Helm 3.0+** - This is the earliest version of Helm tested. It is possible
+    it works with earlier versions but this chart is untested for those versions.
+  * **Kubernetes 1.20+** - This is the earliest version of Kubernetes tested.
+    It is possible that this chart works with earlier versions but it is
+    untested.
 
 ## Usage
 
@@ -14,6 +30,8 @@ this is WIP we don't publish this yet.
 $ helm install waypoint ./
 ...
 ```
+
+**Note:** we will support the official HashiCorp Helm chart index soon.
 
 #### Wait for Waypoint to Initialize
 
