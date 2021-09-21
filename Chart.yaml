@@ -1,8 +1,8 @@
 apiVersion: v2
 name: waypoint
-description: Unofficial Helm Chart for HashiCorp Waypoint
+description: Official Helm Chart for HashiCorp Waypoint
 type: application
-version: 0.1.0
+version: 0.1.0-alpha
 appVersion: "0.6.0-alpha"
 
 # We want Kube 1.20+ so that on-demand runners can be cleaned up properly.
