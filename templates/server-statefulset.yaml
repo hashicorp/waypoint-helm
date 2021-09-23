@@ -43,6 +43,11 @@ spec:
       volumes:
         - name: home
           emptyDir: {}
+      {{- if .Values.server.certs.secretName }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.server.certs.secretName }}"
+      {{- end }}
       {{- include "imagePullSecrets" . | nindent 6 }}
       containers:
         - name: waypoint
@@ -60,6 +65,10 @@ spec:
           - "-db=/data/data.db"
           - "-listen-grpc=0.0.0.0:9701"
           - "-listen-http=0.0.0.0:9702"
+          {{- if .Values.server.certs.secretName }}
+          - "-tls-cert-file=/secret/certs/{{ .Values.server.certs.certName }}"
+          - "-tls-key-file=/secret/certs/{{ .Values.server.certs.keyName }}"
+          {{- end }}
           env:
             - name: HOME
               value: /home/waypoint
@@ -68,15 +77,20 @@ spec:
               mountPath: /data
             - name: home
               mountPath: /home/waypoint
+          {{- if .Values.server.certs.secretName }}
+            - name: certs
+              mountPath: /secret/certs
+              readOnly: true
+          {{- end }}
           ports:
             - containerPort: 9701
               name: grpc
             - containerPort: 9702
-              name: http
+              name: https
           livenessProbe:
             httpGet:
               path: "/"
-              port: http
+              port: https
               scheme: HTTPS
             failureThreshold: 2
             initialDelaySeconds: 5

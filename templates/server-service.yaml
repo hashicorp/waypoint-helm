@@ -15,9 +15,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - name: http
+    - name: https
       port: 9702
-      targetPort: http
+      targetPort: https
     - name: grpc
       port: 9701
       targetPort: grpc

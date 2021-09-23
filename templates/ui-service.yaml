@@ -21,7 +21,7 @@ spec:
     app.kubernetes.io/instance: {{ .Release.Name }}
     component: server
   ports:
-    - name: http
+    - name: https
       port: 443
       targetPort: 9702
     - name: grpc

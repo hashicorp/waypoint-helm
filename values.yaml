@@ -19,6 +19,19 @@ server:
     tag: "latest"
     pullPolicy: Always
 
+  certs:
+    # The name of the Kubernetes secret of type "kubernetes.io/tls" that
+    # contains the TLS certificate and key to use for the server API.
+    # If this is not set, then a self-signed certificate will be generated
+    # and used per instance.
+    secretName: null
+
+    # certName and keyName are the names of the files within the secret for
+    # the TLS cert and private key, respectively. These have reasonable
+    # defaults but can be customized if necessary.
+    certName: tls.crt
+    keyName: tls.key
+
   # This configures the Waypoint Statefulset to create a PVC for data storage.
   storage:
     # Size of the PVC created
