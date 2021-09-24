@@ -61,7 +61,7 @@ spec:
           - "server"
           - "run"
           - "-accept-tos"
-          - "-vvv"
+          - "-vv"
           - "-db=/data/data.db"
           - "-listen-grpc=0.0.0.0:9701"
           - "-listen-http=0.0.0.0:9702"
