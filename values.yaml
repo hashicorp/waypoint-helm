@@ -181,6 +181,46 @@ ui:
     # @type: string
     additionalSpec: null
 
+  # Ingress allows ingress services to be created to allow external access
+  # to the Waypoint server. This is disabled by default and requires some
+  # configuration.
+  ingress:
+    # Set this to true to enable the ingress. Please set some additional
+    # config below as noted.
+    enabled: false
+
+    # Hosts is the set of hosts that should be routed to this ingress.
+    hosts:
+      - host: chart-example.local
+        paths: []
+
+    labels: {}
+      # traffic: external
+
+    annotations: {}
+      # |
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      #   or
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    ## Extra paths to prepend to the host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
+    # TLS certs to use for termination. This will default to the manually
+    # specified TLS certs for the server if set. Otherwise, this will set
+    # no certs and only insecure HTTP will be supported (not recommended)
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+
 bootstrap:
   # Definition of the serviceAccount used to bootstrap Waypoint.
   serviceAccount:

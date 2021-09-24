@@ -196,3 +196,17 @@ imagePullSecrets:
   - name: {{ . }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Sets extra ingress annotations
+*/}}
+{{- define "waypoint.ingress.annotations" -}}
+  {{- if .Values.ui.ingress.annotations }}
+    {{- $tp := typeOf .Values.ui.ingress.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.ui.ingress.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.ui.ingress.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
