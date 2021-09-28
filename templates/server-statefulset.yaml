@@ -65,6 +65,7 @@ spec:
           - "-db=/data/data.db"
           - "-listen-grpc=0.0.0.0:9701"
           - "-listen-http=0.0.0.0:9702"
+          - "-listen-http-insecure=0.0.0.0:9703"
           {{- if .Values.server.certs.secretName }}
           - "-tls-cert-file=/secret/certs/{{ .Values.server.certs.certName }}"
           - "-tls-key-file=/secret/certs/{{ .Values.server.certs.keyName }}"
@@ -87,11 +88,11 @@ spec:
               name: grpc
             - containerPort: 9702
               name: https
+            - containerPort: 9703
+              name: http
           livenessProbe:
-            httpGet:
-              path: "/"
-              port: https
-              scheme: HTTPS
+            tcpSocket:
+             port: grpc
             failureThreshold: 2
             initialDelaySeconds: 5
             periodSeconds: 3
