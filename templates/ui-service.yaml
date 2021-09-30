@@ -30,6 +30,9 @@ spec:
     - name: grpc
       port: 9701
       targetPort: grpc
+    - name: https
+      port: 9702
+      targetPort: https
   {{- if .Values.ui.service.type }}
   type: {{ .Values.ui.service.type }}
   {{- end }}
