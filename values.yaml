@@ -8,7 +8,6 @@ global:
 server:
   # If not set to true, Waypoint server will not be installed.
   enabled: true
-
   # The image to use for the installation.
   #
   # NOTE(mitchellh): This is currently set to our alpha image which we do
@@ -113,6 +112,8 @@ runner:
       pullPolicy: Always
  
     # Definition of the serviceAccount used to by Waypoint on-demand runners.
+    # On-demand runners execute the kubernetes plugin, so they need permission to
+    # and destroy deployments, services, etc.
     serviceAccount:
       # Specifies whether a service account should be created
       create: true
@@ -146,6 +147,8 @@ runner:
   annotations: {}
 
   # Definition of the serviceAccount used to by Waypoint static runner. 
+  # If using on-demand runners (enabled by default), this primarily
+  # needs permissions to run tasks.
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
