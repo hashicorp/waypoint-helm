@@ -27,6 +27,9 @@ spec:
     - name: https
       port: 443
       targetPort: https
+    - name: ui-forward
+      port: 9702
+      targetPort: https
     - name: grpc
       port: 9701
       targetPort: grpc
