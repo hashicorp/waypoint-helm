@@ -104,14 +104,27 @@ runner:
     repository: "ghcr.io/hashicorp/waypoint/alpha"
     tag: "latest"
     pullPolicy: Always
+  
+  odr:
+    # The image to use for the on-demand runner.
+    image:
+      repository: "ghcr.io/hashicorp/waypoint/alpha-odr"
+      tag: "latest"
+      pullPolicy: Always
+ 
+    # Definition of the serviceAccount used to by Waypoint on-demand runners.
+    serviceAccount:
+      # Specifies whether a service account should be created
+      create: true
+      # The name of the service account to use.
+      # If not set and create is true, a name is generated using the fullname template
+      name: ""
+      # Extra annotations for the serviceAccount definition. This can either be
+      # YAML or a YAML-formatted multi-line templated string map of the
+      # annotations to apply to the serviceAccount.
+      annotations: {}
 
-
-  # The image to use for the on-demand runner.
-  odrImage:
-    repository: "ghcr.io/hashicorp/waypoint/alpha-odr"
-    tag: "latest"
-    pullPolicy: Always
-
+ 
   resources:
     requests:
       memory: 256Mi
@@ -132,9 +145,7 @@ runner:
   # of the annotations to apply to the server pods
   annotations: {}
 
-  # Definition of the serviceAccount used to by Waypoint runners. This will
-  # be shared by both the static runner and the on-demand runner that is
-  # initially configured with the chart install.
+  # Definition of the serviceAccount used to by Waypoint static runner. 
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
