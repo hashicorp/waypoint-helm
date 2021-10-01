@@ -121,7 +121,7 @@ Sets the runner token secret name.
 {{- end -}}
 
 {{/*
-Create the name of the service account to use
+Create the name of the static runner service account to use
 */}}
 {{- define "waypoint.runner.serviceAccount.name" -}}
 {{- if .Values.runner.serviceAccount.create -}}
@@ -132,7 +132,7 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Sets extra service account annotations
+Sets extra static runner service account annotations
 */}}
 {{- define "waypoint.runner.serviceAccount.annotations" -}}
   {{- if .Values.runner.serviceAccount.annotations }}
@@ -142,6 +142,32 @@ Sets extra service account annotations
       {{- tpl .Values.runner.serviceAccount.annotations . | nindent 4 }}
     {{- else }}
       {{- toYaml .Values.runner.serviceAccount.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Create the name of the odr runner service account to use
+*/}}
+{{- define "waypoint.runner.odr.serviceAccount.name" -}}
+{{- if .Values.runner.odr.serviceAccount.create -}}
+    {{ default (printf "%s-runner-odr" (include "waypoint.fullname" .)) .Values.runner.odr.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.runner.odr.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Sets extra odr runner service account annotations
+*/}}
+{{- define "waypoint.runner.odr.serviceAccount.annotations" -}}
+  {{- if .Values.runner.odr.serviceAccount.annotations }}
+  annotations:
+    {{- $tp := typeOf .Values.runner.odr.serviceAccount.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.runner.odr.serviceAccount.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.runner.odr.serviceAccount.annotations | nindent 4 }}
     {{- end }}
   {{- end }}
 {{- end -}}

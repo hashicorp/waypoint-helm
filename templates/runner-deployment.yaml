@@ -53,7 +53,7 @@ spec:
         - "-ec"
         - |
           until [ -s "/secret/token" ]; do
-            echo "Waiting for runner token secret to be populated..."
+            echo "Waiting for runner token secret '/secret/token' to be populated from secret..."
             sleep 2
           done
         volumeMounts:
