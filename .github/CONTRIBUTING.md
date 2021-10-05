@@ -60,8 +60,8 @@ issue. Stale issues will be closed.
 1. Unless it is critical, the issue is left for a period of time (sometimes many
    weeks or months), giving outside contributors a chance to address the issue
    and our internal teams time to plan for inclusion in a release.
-1. Once someone commits to addressing the issue, it is put in the target milestone
-   (e.g. `0.5.x`) and assigned to the person who has committed to the work.
+1. Once someone commits to addressing the issue, it is assigned to a Waypoint maintainer
+   or community member who has committed to the work.
    1. If you'd like to work on an open issue, please double-check first that no
    one else is currently working on it.
    1. It's also best to give a quick overview of how you plan to solve the issue
@@ -75,13 +75,10 @@ issue. Stale issues will be closed.
 ## Opening a PR
 
 1. Title the PR with a helpful prefix following the pattern `parent/child`, 
-e.g. `builtin/k8s` or `internal/core`
+e.g. `service/ui` or `bootstrap/job`
 1. Include helpful information in the description
    * For a bug fix, explain or show an example of the behavior before and 
   after the change
    * If applicable, include information on how to test manually
 1. Request review from either `waypoint-core` or `waypoint-frontend` based on 
 your changes
-
->Note: the auto-labeler will assign other labels after you open the PR, based 
->on what files have changes.
