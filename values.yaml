@@ -9,14 +9,12 @@ server:
   # If not set to true, Waypoint server will not be installed.
   enabled: true
   # The image to use for the installation.
-  #
-  # NOTE(mitchellh): This is currently set to our alpha image which we do
-  # NOT want in the final Helm chart if we release this publicly. But we want
-  # to build the Helm chart around on-demand runners which require nightly.
   image:
-    repository: "ghcr.io/hashicorp/waypoint/alpha"
-    tag: "latest"
-    pullPolicy: Always
+    repository: "hashicorp/waypoint"
+    tag: "0.6.0"
+    pullPolicy: IfNotPresent
+    # tag: "latest"
+    # pullPolicy: Always
 
   certs:
     # The name of the Kubernetes secret of type "kubernetes.io/tls" that
@@ -103,14 +101,14 @@ runner:
     repository: "ghcr.io/hashicorp/waypoint/alpha"
     tag: "latest"
     pullPolicy: Always
-  
+
   odr:
     # The image to use for the on-demand runner.
     image:
       repository: "ghcr.io/hashicorp/waypoint/alpha-odr"
       tag: "latest"
       pullPolicy: Always
- 
+
     # Definition of the serviceAccount used to by Waypoint on-demand runners.
     # On-demand runners execute the kubernetes plugin, so they need permission to
     # and destroy deployments, services, etc.
@@ -125,7 +123,6 @@ runner:
       # annotations to apply to the serviceAccount.
       annotations: {}
 
- 
   resources:
     requests:
       memory: 256Mi
@@ -146,7 +143,7 @@ runner:
   # of the annotations to apply to the server pods
   annotations: {}
 
-  # Definition of the serviceAccount used to by Waypoint static runner. 
+  # Definition of the serviceAccount used to by Waypoint static runner.
   # If using on-demand runners (enabled by default), this primarily
   # needs permissions to run tasks.
   serviceAccount:
@@ -233,7 +230,6 @@ ui:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
 
 bootstrap:
   # Definition of the serviceAccount used to bootstrap Waypoint.
