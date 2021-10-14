@@ -93,10 +93,6 @@ runner:
   enabled: true
 
   # The image to use for the installation.
-  #
-  # NOTE(mitchellh): This is currently set to our alpha image which we do
-  # NOT want in the final Helm chart if we release this publicly. But we want
-  # to build the Helm chart around on-demand runners which require nightly.
   image:
     repository: "hashicorp/waypoint"
     tag: "0.6.0"
