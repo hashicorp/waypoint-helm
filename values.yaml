@@ -98,16 +98,20 @@ runner:
   # NOT want in the final Helm chart if we release this publicly. But we want
   # to build the Helm chart around on-demand runners which require nightly.
   image:
-    repository: "ghcr.io/hashicorp/waypoint/alpha"
-    tag: "latest"
-    pullPolicy: Always
+    repository: "hashicorp/waypoint"
+    tag: "0.6.0"
+    pullPolicy: IfNotPresent
+    # tag: "latest"
+    # pullPolicy: Always
 
   odr:
     # The image to use for the on-demand runner.
     image:
-      repository: "ghcr.io/hashicorp/waypoint/alpha-odr"
-      tag: "latest"
-      pullPolicy: Always
+      repository: "hashicorp/waypoint-odr"
+      tag: "0.6.0"
+      pullPolicy: IfNotPresent
+      # tag: "latest"
+      # pullPolicy: Always
 
     # Definition of the serviceAccount used to by Waypoint on-demand runners.
     # On-demand runners execute the kubernetes plugin, so they need permission to
