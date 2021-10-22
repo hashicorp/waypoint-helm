@@ -3,10 +3,7 @@
 This repository contains the official HashiCorp Helm chart for installing
 and configuring Waypoint on Kubernetes.
 
-**This is pre-release.** The recommended way today to install Waypoint
-is using the `waypoint install` subcommand. This Helm chart only works with
-Waypoint 0.6+ (unreleased). We will document this Helm chart in more detail
-once it is officially released.
+This Helm chart only works with Waypoint 0.6+.
 
 ## Prerequisites
 
