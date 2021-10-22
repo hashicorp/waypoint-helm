@@ -70,6 +70,9 @@ spec:
           - "-tls-cert-file=/secret/certs/{{ .Values.server.certs.certName }}"
           - "-tls-key-file=/secret/certs/{{ .Values.server.certs.keyName }}"
           {{- end }}
+          {{- range .Values.server.runArgs }}
+          - "{{ . }}"
+          {{- end }}
           env:
             - name: HOME
               value: /home/waypoint

@@ -16,6 +16,9 @@ server:
     # tag: "latest"
     # pullPolicy: Always
 
+  # Arguments to pass to the `waypoint server run` command. Will overwrite default options.
+  runArgs: []
+
   certs:
     # The name of the Kubernetes secret of type "kubernetes.io/tls" that
     # contains the TLS certificate and key to use for the server API.
