@@ -11,7 +11,7 @@ server:
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
-    tag: "0.6.0"
+    tag: "0.6.1"
     pullPolicy: IfNotPresent
     # tag: "latest"
     # pullPolicy: Always
@@ -98,7 +98,7 @@ runner:
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
-    tag: "0.6.0"
+    tag: "0.6.1"
     pullPolicy: IfNotPresent
     # tag: "latest"
     # pullPolicy: Always
@@ -107,7 +107,7 @@ runner:
     # The image to use for the on-demand runner.
     image:
       repository: "docker.io/hashicorp/waypoint-odr"
-      tag: "0.6.0"
+      tag: "0.6.1"
       pullPolicy: IfNotPresent
       # tag: "latest"
       # pullPolicy: Always
