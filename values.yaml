@@ -112,6 +112,12 @@ runner:
       # tag: "latest"
       # pullPolicy: Always
 
+    # List of namespaces that waypoint can access and deploy into.
+    # By default, the waypoint on-demand runner will create a rolebinding granting the
+    # edit clusterrole in the namespace the chart is installed into. Waypoint will
+    # instead create this rolebinding in each managed namespace.
+    managedNamespaces: []
+
     # Definition of the serviceAccount used to by Waypoint on-demand runners.
     # On-demand runners execute the kubernetes plugin, so they need permission to
     # and destroy deployments, services, etc.
