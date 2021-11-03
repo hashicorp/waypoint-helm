@@ -113,9 +113,13 @@ runner:
       # pullPolicy: Always
 
     # List of namespaces that waypoint can access and deploy into.
-    # By default, the waypoint on-demand runner will create a rolebinding granting the
-    # edit clusterrole in the namespace the chart is installed into. Waypoint will
-    # instead create this rolebinding in each managed namespace.
+    # By default, the Waypoint on-demand runner will create a rolebinding granting the
+    # edit clusterrole in the namespace the chart is installed into.
+    # If any managedNamespaces are specified, rolebindings will be created to
+    # grant permissions in those namespaces instead.
+    # If Waypoint should be able to generate deployments in it's own namespace and
+    # additional other namespaces, Waypoint's own namespace must also be appended to
+    # this set.
     managedNamespaces: []
 
     # Definition of the serviceAccount used to by Waypoint on-demand runners.
