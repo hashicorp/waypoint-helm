@@ -17,7 +17,7 @@ server:
     # pullPolicy: Always
 
   # Arguments to pass to the `waypoint server run` command. Will overwrite default options.
-  runArgs: []
+  runArgs: ["-vv"]
 
   certs:
     # The name of the Kubernetes secret of type "kubernetes.io/tls" that
@@ -102,6 +102,9 @@ runner:
     pullPolicy: IfNotPresent
     # tag: "latest"
     # pullPolicy: Always
+
+  # Arguments to pass to the `waypoint runner agent` command. Will overwrite default options.
+  agentArgs: ["-vvv"]
 
   odr:
     # The image to use for the on-demand runner.

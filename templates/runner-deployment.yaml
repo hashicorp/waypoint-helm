@@ -71,8 +71,10 @@ spec:
           args:
           - "runner"
           - "agent"
-          - "-vvv"
           - "-liveness-tcp-addr=:1234"
+          {{- range .Values.runner.agentArgs }}
+          - "{{ . }}"
+          {{- end }}
           env:
             - name: HOME
               value: /home/waypoint
