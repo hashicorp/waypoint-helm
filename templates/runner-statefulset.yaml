@@ -58,6 +58,10 @@ spec:
         - name: token
           secret:
             secretName: {{ template "waypoint.runnerTokenSecret" . }}
+      {{- else if .Values.runner.server.tokenSecret }}
+        - name: token
+          secret:
+            secretName: {{ .Values.runner.server.tokenSecret }}
       {{- end }}
       {{- include "imagePullSecrets" . | nindent 6 }}
       {{- if .Values.server.enabled }}
@@ -119,6 +123,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "waypoint.runnerTokenSecret" . }}
+                  key: token
+            {{- else if .Values.runner.server.tokenSecret }}
+            - name: WAYPOINT_SERVER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.runner.server.tokenSecret }}
                   key: token
             {{- end }}
           volumeMounts:

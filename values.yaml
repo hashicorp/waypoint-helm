@@ -119,6 +119,11 @@ runner:
     # using the `waypoint server cookie` CLI command or the API.
     cookie: ""
 
+    # A secret to read the auth token from. This is optional. If this isn't
+    # set, runner adoption will be used. This only applies for runner-only
+    # installs. For server installs, the bootstrap token is used.
+    tokenSecret: ""
+
   # This configures the Statefulset to create a PVC for data storage for the
   # runner. Runners do not require much data storage.
   storage:
