@@ -1,4 +1,4 @@
-{{- if eq (.Values.ui.service.enabled | toString) "true" }}
+{{- if (and (eq (.Values.ui.service.enabled | toString) "true") (eq (.Values.server.enabled | toString) "true")) }}
 # UI Service for Waypoint Server
 apiVersion: v1
 kind: Service
