@@ -103,9 +103,9 @@ spec:
             - name: WAYPOINT_SERVER_ADDR
               value: {{ .Values.runner.server.addr }}
             - name: WAYPOINT_SERVER_TLS
-              value: {{ .Values.runner.server.tls | toString }}
+              value: "{{ .Values.runner.server.tls | toString }}"
             - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
-              value: {{ .Values.runner.server.tlsSkipVerify | toString }}
+              value: "{{ .Values.runner.server.tlsSkipVerify | toString }}"
             {{- else }}
             - name: WAYPOINT_SERVER_ADDR
               value: {{ template "waypoint.fullname" . }}-server:9701
