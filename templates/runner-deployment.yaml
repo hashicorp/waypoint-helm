@@ -41,10 +41,13 @@ spec:
       volumes:
         - name: home
           emptyDir: {}
+      {{- if .Values.server.enabled }}
         - name: token
           secret:
             secretName: {{ template "waypoint.runnerTokenSecret" . }}
+      {{- end }}
       {{- include "imagePullSecrets" . | nindent 6 }}
+      {{- if .Values.server.enabled }}
       initContainers:
       - name: wait-for-token
         image: "busybox"
@@ -60,6 +63,7 @@ spec:
           - name: token
             mountPath: /secret
             readOnly: true
+      {{- end }}
       containers:
         - name: waypoint
           resources:
@@ -72,23 +76,37 @@ spec:
           - "runner"
           - "agent"
           - "-liveness-tcp-addr=:1234"
+          {{- if (and .Values.runner.server.addr .Values.runner.server.cookie) }}
+          - "-cookie={{ .Values.runner.server.cookie }}"
+          {{- end }}
           {{- range .Values.runner.agentArgs }}
           - "{{ . }}"
           {{- end }}
           env:
             - name: HOME
               value: /home/waypoint
+            {{- if .Values.runner.server.addr }}
+            - name: WAYPOINT_SERVER_ADDR
+              value: {{ .Values.runner.server.addr }}
+            - name: WAYPOINT_SERVER_TLS
+              value: {{ .Values.runner.server.tls | toString }}
+            - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
+              value: {{ .Values.runner.server.tlsSkipVerify | toString }}
+            {{- else }}
             - name: WAYPOINT_SERVER_ADDR
               value: {{ template "waypoint.fullname" . }}-server:9701
             - name: WAYPOINT_SERVER_TLS
               value: "true"
             - name: WAYPOINT_SERVER_TLS_SKIP_VERIFY
               value: "true"
+            {{- end }}
+            {{- if .Values.server.enabled }}
             - name: WAYPOINT_SERVER_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "waypoint.runnerTokenSecret" . }}
                   key: token
+            {{- end }}
           volumeMounts:
             - name: home
               mountPath: /home/waypoint

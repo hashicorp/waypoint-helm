@@ -106,6 +106,19 @@ runner:
   # Arguments to pass to the `waypoint runner agent` command. Will overwrite default options.
   agentArgs: ["-vvv"]
 
+  # Address to talk to the server with. If this is not specified, this will
+  # default to the server installed with this Helm chart release. If you're
+  # installing additional runners, you must specify this since additional runners
+  # are installed using Helm releases.
+  server:
+    addr: ""
+    tls: true
+    tlsSkipVerify: true
+
+    # Cookie must be specified for runner adoption. The cookie can be retrieved
+    # using the `waypoint server cookie` CLI command or the API.
+    cookie: ""
+
   odr:
     # The image to use for the on-demand runner.
     image:
