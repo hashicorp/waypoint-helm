@@ -93,9 +93,12 @@ spec:
           - "runner"
           - "agent"
           - "-liveness-tcp-addr=:1234"
-          - "-state-dir=/data/runner"
           {{- if (and .Values.runner.server.addr .Values.runner.server.cookie) }}
           - "-cookie={{ .Values.runner.server.cookie }}"
+          # TODO(mitchellh): this should be outside the if statement once
+          # Waypoint 0.8 is released. We want this set always. For now, we
+          # can just set it during adoption operations.
+          - "-state-dir=/data/runner"
           {{- end }}
           {{- range .Values.runner.agentArgs }}
           - "{{ . }}"
