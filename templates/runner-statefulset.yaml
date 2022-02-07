@@ -12,7 +12,7 @@ metadata:
   {{- template "waypoint.statefulSet.annotations" . }}
 spec:
   serviceName: {{ template "waypoint.fullname" . }}-runner
-  replicas: 1 # We only want 1 static runner
+  replicas: {{ .Values.runner.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "waypoint.name" . }}

@@ -95,6 +95,11 @@ runner:
   # be configured for this cluster.
   enabled: true
 
+  # The number of runners to run. This normally only has to be 1 or 2 since
+  # the way Waypoint works is by using runners to launch on-demand runners.
+  # Therefore, this usually isn't a bottleneck to scalability.
+  replicas: 1
+
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
