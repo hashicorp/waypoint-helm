@@ -1,7 +1,7 @@
 {{- if (eq (.Values.runner.enabled | toString) "true") }}
-# Deployment to run the Waypoint static runner.
+# StatefulSet to run the Waypoint static runner.
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "waypoint.fullname" . }}-runner
   namespace: {{ .Release.Namespace }}
@@ -11,12 +11,25 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- template "waypoint.statefulSet.annotations" . }}
 spec:
+  serviceName: {{ template "waypoint.fullname" . }}-runner
   replicas: 1 # We only want 1 static runner
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "waypoint.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       component: runner
+  volumeClaimTemplates:
+    - metadata:
+        name: data-{{ .Release.Namespace }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.runner.storage.size }}
+        {{- if .Values.runner.storage.storageClass }}
+        storageClassName: {{ .Values.runner.storage.storageClass }}
+        {{- end }}
   template:
     metadata:
       labels:
@@ -76,6 +89,7 @@ spec:
           - "runner"
           - "agent"
           - "-liveness-tcp-addr=:1234"
+          - "-state-dir=/data/runner"
           {{- if (and .Values.runner.server.addr .Values.runner.server.cookie) }}
           - "-cookie={{ .Values.runner.server.cookie }}"
           {{- end }}
@@ -110,6 +124,8 @@ spec:
           volumeMounts:
             - name: home
               mountPath: /home/waypoint
+            - name: data-{{ .Release.Namespace }}
+              mountPath: /data
           livenessProbe:
             tcpSocket:
               port: 1234

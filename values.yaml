@@ -119,6 +119,15 @@ runner:
     # using the `waypoint server cookie` CLI command or the API.
     cookie: ""
 
+  # This configures the Statefulset to create a PVC for data storage for the
+  # runner. Runners do not require much data storage.
+  storage:
+    # Size of the PVC created
+    size: 1Gi
+    # Name of the storage class to use.  If null it will use the
+    # configured default Storage Class.
+    storageClass: null
+
   odr:
     # The image to use for the on-demand runner.
     image:
