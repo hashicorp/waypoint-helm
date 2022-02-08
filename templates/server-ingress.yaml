@@ -1,4 +1,4 @@
-{{- if .Values.ui.ingress.enabled -}}
+{{- if (and (eq (.Values.server.enabled | toString) "true") .Values.ui.ingress.enabled) -}}
 {{- $fullname := (include "waypoint.fullname" .) -}}
 {{- $extraPaths := .Values.ui.ingress.extraPaths -}}
 apiVersion: networking.k8s.io/v1

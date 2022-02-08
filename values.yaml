@@ -95,6 +95,11 @@ runner:
   # be configured for this cluster.
   enabled: true
 
+  # The number of runners to run. This normally only has to be 1 or 2 since
+  # the way Waypoint works is by using runners to launch on-demand runners.
+  # Therefore, this usually isn't a bottleneck to scalability.
+  replicas: 1
+
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
@@ -105,6 +110,33 @@ runner:
 
   # Arguments to pass to the `waypoint runner agent` command. Will overwrite default options.
   agentArgs: ["-vvv"]
+
+  # Address to talk to the server with. If this is not specified, this will
+  # default to the server installed with this Helm chart release. If you're
+  # installing additional runners, you must specify this since additional runners
+  # are installed using Helm releases.
+  server:
+    addr: ""
+    tls: true
+    tlsSkipVerify: true
+
+    # Cookie must be specified for runner adoption. The cookie can be retrieved
+    # using the `waypoint server cookie` CLI command or the API.
+    cookie: ""
+
+    # A secret to read the auth token from. This is optional. If this isn't
+    # set, runner adoption will be used. This only applies for runner-only
+    # installs. For server installs, the bootstrap token is used.
+    tokenSecret: ""
+
+  # This configures the Statefulset to create a PVC for data storage for the
+  # runner. Runners do not require much data storage.
+  storage:
+    # Size of the PVC created
+    size: 1Gi
+    # Name of the storage class to use.  If null it will use the
+    # configured default Storage Class.
+    storageClass: null
 
   odr:
     # The image to use for the on-demand runner.
