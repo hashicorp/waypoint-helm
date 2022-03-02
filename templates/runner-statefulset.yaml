@@ -92,6 +92,9 @@ spec:
           args:
           - "runner"
           - "agent"
+          {{- if .Values.runner.id }}
+          - "-id={{ .Values.runner.id }}"
+          {{- end }}
           - "-liveness-tcp-addr=:1234"
           {{- if (and .Values.runner.server.addr .Values.runner.server.cookie) }}
           - "-cookie={{ .Values.runner.server.cookie }}"
