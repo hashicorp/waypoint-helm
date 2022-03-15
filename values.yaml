@@ -62,6 +62,15 @@ server:
   # of the annotations to apply to the server pods
   annotations: {}
 
+  # nodeSelector labels for server pod assignment
+  # This should be formatted as a multi-line string.
+  # Example:
+  # ```yaml
+  # nodeSelector: |
+  #   beta.kubernetes.io/arch: amd64
+  # ```
+  nodeSelector: null
+
   # Definition of the serviceAccount used to run Waypoint.
   serviceAccount:
     # Specifies whether a service account should be created
@@ -183,17 +192,26 @@ runner:
     #    memory: 256Mi
     #    cpu: 250m
 
-  # Priority class for server pods
+  # Priority class for runner pods
   priorityClassName: ""
 
-  # Extra labels to attach to the server pods
-  # This should be a YAML map of the labels to apply to the server pods
+  # Extra labels to attach to the runner pods
+  # This should be a YAML map of the labels to apply to the runner pods
   extraLabels: {}
 
-  # Extra annotations to attach to the server pods
+  # Extra annotations to attach to the runner pods
   # This can either be YAML or a YAML-formatted multi-line templated string map
-  # of the annotations to apply to the server pods
+  # of the annotations to apply to the runner pods
   annotations: {}
+
+  # nodeSelector labels for runner pod assignment
+  # This should be formatted as a multi-line string.
+  # Example:
+  # ```yaml
+  # nodeSelector: |
+  #   beta.kubernetes.io/arch: amd64
+  # ```
+  nodeSelector: null
 
   # Definition of the serviceAccount used to by Waypoint static runner.
   # If using on-demand runners (enabled by default), this primarily
