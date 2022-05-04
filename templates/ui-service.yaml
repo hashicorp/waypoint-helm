@@ -11,10 +11,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: ui
-  {{- if .Values.ui.service.annotations }}
   annotations:
-    {{ tpl .Values.ui.service.annotations . | nindent 4 | trim }}
-  {{- end }}
+{{- template "waypoint.ui.service.annotations" . }}
 spec:
   selector:
     app.kubernetes.io/name: {{ template "waypoint.name" . }}

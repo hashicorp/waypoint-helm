@@ -236,3 +236,17 @@ Sets extra ingress annotations
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Sets extra UI Service annotations
+*/}}
+{{- define "waypoint.ui.service.annotations" -}}
+  {{- if .Values.ui.service.annotations }}
+    {{- $tp := typeOf .Values.ui.service.annotations }}
+    {{- if eq $tp "string" }}
+      {{- tpl .Values.ui.service.annotations . | nindent 4 }}
+    {{- else }}
+      {{- toYaml .Values.ui.service.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
