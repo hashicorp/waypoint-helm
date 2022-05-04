@@ -228,7 +228,7 @@ ui:
     type: LoadBalancer
 
     # Extra annotations for the UI Service. This can either be YAML or a
-    # YAML-formatted multi-line templated string map of the annotations.
+    # YAML-formatted multi-line string map of the annotations.
     annotations: {}
 
     # Additional ServiceSpec values

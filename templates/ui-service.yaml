@@ -12,7 +12,7 @@ metadata:
     release: {{ .Release.Name }}
     component: ui
   annotations:
-{{- template "waypoint.ui.service.annotations" . }}
+{{ template "waypoint.ui.service.annotations" . }}
 spec:
   selector:
     app.kubernetes.io/name: {{ template "waypoint.name" . }}
