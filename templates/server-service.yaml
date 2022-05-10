@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/name: {{ include "waypoint.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "waypoint.extraLabels" .Values.server.service.labels | nindent 4 }}
   annotations:
 {{ template "waypoint.service.annotations" .}}
 spec:

@@ -11,6 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: ui
+    {{- include "waypoint.extraLabels" .Values.ui.service.labels | nindent 4 }}
   {{- if .Values.ui.service.annotations }}
   annotations:
     {{ tpl .Values.ui.service.annotations . | nindent 4 | trim }}

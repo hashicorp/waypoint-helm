@@ -88,6 +88,9 @@ server:
     # to the service.
     annotations: {}
 
+    # Extra labels for the server service definition, passed as YAML or a string
+    labels: {}
+
 runner:
   # If not set to true, the Waypoint runner will not be installed. At least
   # one static runner must exist in a Waypoint cluster for on-demand runners
@@ -238,6 +241,9 @@ ui:
     # @type: string
     annotations: null
 
+    # Extra labels for the UI service definition, passed as YAML or a string
+    labels: {}
+
     # Additional ServiceSpec values
     # This should be a multi-line string mapping directly to a Kubernetes
     # ServiceSpec object.
@@ -257,6 +263,7 @@ ui:
       - host: chart-example.local
         paths: []
 
+    # Extra labels for the UI ingress definition, passed as YAML or a string
     labels: {}
       # traffic: external
 

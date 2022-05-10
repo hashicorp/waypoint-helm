@@ -11,9 +11,7 @@ metadata:
     app.kubernetes.io/name: {{ include "waypoint.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{- with .Values.ui.ingress.labels }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- include "waypoint.extraLabels" .Values.ui.ingress.labels | nindent 4 }}
   annotations:
     alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
