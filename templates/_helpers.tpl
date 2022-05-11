@@ -237,7 +237,6 @@ Sets extra ingress annotations
   {{- end }}
 {{- end -}}
 
-
 {{/*
 Formats extra labels using the passed labels value. Indentation should be handled by the caller.
 */}}
