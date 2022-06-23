@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "waypoint.fullname" . }}-bootstrap-{{ randAlphaNum 6 | nospace | lower }}
+  name: {{ template "waypoint.fullname" . }}-bootstrap-{{ .Values.server.image.tag | default "latest" }}-{{ randAlphaNum 6 | nospace | lower }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "waypoint.name" . }}
