@@ -113,7 +113,7 @@ runner:
     # pullPolicy: Always
 
   # Arguments to pass to the `waypoint runner agent` command. Will overwrite default options.
-  agentArgs: ["-vvv"]
+  agentArgs: ["-vv"]
 
   # Address to talk to the server with. If this is not specified, this will
   # default to the server installed with this Helm chart release. If you're
