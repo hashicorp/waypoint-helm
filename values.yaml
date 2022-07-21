@@ -195,6 +195,9 @@ runner:
   # of the annotations to apply to the server pods
   annotations: {}
 
+  # Toleration settings for runner
+  tolerations: []
+
   # Definition of the serviceAccount used to by Waypoint static runner.
   # If using on-demand runners (enabled by default), this primarily
   # needs permissions to run tasks.
