@@ -147,4 +147,8 @@ spec:
             periodSeconds: 3
             successThreshold: 1
             timeoutSeconds: 5
+      {{- if .Values.runner.nodeSelector }}
+      nodeSelector:
+        {{ tpl .Values.runner.nodeSelector . | indent 8 | trim }}
+      {{- end }}
 {{ end }}

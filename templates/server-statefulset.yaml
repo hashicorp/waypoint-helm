@@ -100,6 +100,10 @@ spec:
             periodSeconds: 3
             successThreshold: 1
             timeoutSeconds: 5
+      {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+        {{ tpl .Values.server.nodeSelector . | indent 8 | trim }}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data-{{ .Release.Namespace }}
