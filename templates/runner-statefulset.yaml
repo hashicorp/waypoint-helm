@@ -142,7 +142,7 @@ spec:
           livenessProbe:
             tcpSocket:
               port: 1234
-            failureThreshold: 2
+            failureThreshold: 10
             initialDelaySeconds: 5
             periodSeconds: 3
             successThreshold: 1
