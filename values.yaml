@@ -11,7 +11,7 @@ server:
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
-    tag: "0.10.1"
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
     # tag: "latest"
     # pullPolicy: Always
@@ -116,7 +116,7 @@ runner:
   # The image to use for the installation.
   image:
     repository: "docker.io/hashicorp/waypoint"
-    tag: "0.10.1"
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
     # tag: "latest"
     # pullPolicy: Always
@@ -155,7 +155,7 @@ runner:
     # The image to use for the on-demand runner.
     image:
       repository: "docker.io/hashicorp/waypoint-odr"
-      tag: "0.10.1"
+      tag: "0.10.2"
       pullPolicy: IfNotPresent
       # tag: "latest"
       # pullPolicy: Always
@@ -275,10 +275,12 @@ ui:
       - host: chart-example.local
         paths: []
 
-    labels: {}
+    labels:
+      {}
       # traffic: external
 
-    annotations: {}
+    annotations:
+      {}
       # |
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
