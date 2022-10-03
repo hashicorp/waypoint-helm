@@ -2,8 +2,8 @@ apiVersion: v2
 name: waypoint
 description: Official Helm Chart for HashiCorp Waypoint
 type: application
-version: 0.1.13
-appVersion: "0.10.1"
+version: 0.1.14
+appVersion: "0.10.2"
 
 # We want Kube 1.20+ so that on-demand runners can be cleaned up properly.
 # This uses the Job expiration fields that was introduced in 1.20. Without
