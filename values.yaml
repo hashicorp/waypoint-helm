@@ -304,6 +304,10 @@ ui:
     #      - chart-example.local
 
 bootstrap:
+  # Extra annotations for the bootstrap job definition. This can either be
+  # YAML or a YAML-formatted multi-line templated string map of the
+  # annotations to apply to the pod template of the bootstrap job.
+  annotations: {}
   # Definition of the serviceAccount used to bootstrap Waypoint.
   serviceAccount:
     # Specifies whether a service account should be created

@@ -21,7 +21,8 @@ spec:
         app.kubernetes.io/name: {{ template "waypoint.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         component: bootstrap
-      {{ template "waypoint.annotations" . }}
+      {{ template "waypoint.bootstrap.annotations" . }}
+
     spec:
       serviceAccountName: {{ template "waypoint.bootstrap.serviceAccount.name" . }}
       restartPolicy: Never
