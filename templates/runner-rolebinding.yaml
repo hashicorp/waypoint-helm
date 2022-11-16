@@ -29,3 +29,5 @@ subjects:
     name: {{ template "waypoint.runner.serviceAccount.name" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}
+
+{{- end }}
