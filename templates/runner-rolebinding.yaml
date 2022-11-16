@@ -1,8 +1,21 @@
-{{- if (eq (.Values.runner.serviceAccount.create | toString) "true" ) }}
+{{- if (and (eq (.Values.runner.enabled | toString) "true") (eq (.Values.runner.serviceAccount.create | toString) "true" )) }}
+
+{{/* If no managedNamespaces are provided, default to the release namespace */}}
+{{ $managedNamespaces := list  }}
+{{- range .Values.runner.managedNamespaces }}
+{{ $managedNamespaces = append $managedNamespaces . }}
+{{- end -}}
+{{- if eq (len $managedNamespaces) 0 -}}
+{{ $managedNamespaces = append $managedNamespaces .Release.Namespace }}
+{{- end -}}
+
+{{- range $managedNamespaces }}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ template "waypoint.fullname" . }}-runner-rolebinding
+  namespace: {{ . }}
   labels:
     app.kubernetes.io/name: {{ include "waypoint.name" . }}-runner
     app.kubernetes.io/instance: {{ .Release.Name }}
