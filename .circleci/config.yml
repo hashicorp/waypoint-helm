@@ -19,12 +19,11 @@ jobs:
       - run:
           name: update helm-charts index
           command: |
-            curl --show-error --silent --fail --user "${CIRCLE_TOKEN}:" \
-                -X POST \
-                -H 'Content-Type: application/json' \
-                -H 'Accept: application/json' \
-                -d "{\"branch\": \"main\",\"parameters\":{\"SOURCE_REPO\": \"${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}\",\"SOURCE_TAG\": \"${CIRCLE_TAG}\"}}" \
-                "${CIRCLE_ENDPOINT}/${CIRCLE_PROJECT}/pipeline"
+            gh workflow run .github/workflows/publish-charts.yml \
+              --repo hashicorp/helm-charts \
+              --ref main \
+              -f SOURCE_TAG=\"${CIRCLE_TAG}\" \
+              -f SOURCE_REPO=\"${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}\"
 
 workflows:
   version: 2
