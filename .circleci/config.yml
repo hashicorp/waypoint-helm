@@ -4,6 +4,8 @@ jobs:
   update-helm-charts-index:
     docker:
       - image: docker.mirror.hashicorp.services/circleci/golang:1.15.3
+    environment:
+      CIRCLE_TAG: v0.1.17
     steps:
       - checkout
       - run:
@@ -32,8 +34,3 @@ workflows:
     jobs:
       - update-helm-charts-index:
           context: helm-charts-trigger-waypoint
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
