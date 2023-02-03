@@ -19,11 +19,12 @@ jobs:
       - run:
           name: update helm-charts index
           command: |
+            export GITHUB_TOKEN="${HELM_CHARTS_GITHUB_TOKEN}"
             gh workflow run .github/workflows/publish-charts.yml \
               --repo hashicorp/helm-charts \
-              --ref main \
-              -f SOURCE_TAG=\"${CIRCLE_TAG}\" \
-              -f SOURCE_REPO=\"${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}\"
+              --ref templates_default_test \
+              -f SOURCE_TAG="${CIRCLE_TAG}" \
+              -f SOURCE_REPO="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
 
 workflows:
   version: 2
