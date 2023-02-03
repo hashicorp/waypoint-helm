@@ -30,7 +30,7 @@ jobs:
             export GITHUB_TOKEN="${HELM_CHARTS_GITHUB_TOKEN}"
             ./bin/gh workflow run .github/workflows/publish-charts.yml \
               --repo hashicorp/helm-charts \
-              --ref templates_default_test \
+              --ref main \
               -f SOURCE_TAG="${CIRCLE_TAG}" \
               -f SOURCE_REPO="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
 
