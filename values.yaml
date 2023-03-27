@@ -42,6 +42,12 @@ server:
     # Annotations to apply to the PVC
     annotations: {}
 
+  # Optionally specify extra list of additional volumes for server pods
+  extraVolumes: []
+
+  # Optionally specify extra list of additional volumeMounts for server container(s)
+  extraVolumeMounts: []
+
   resources:
     requests:
       memory: 256Mi
