@@ -11,7 +11,7 @@ jobs:
     container:
       image: docker.mirror.hashicorp.services/circleci/golang:1.15.3
     steps:
-    - uses: actions/checkout@v3.4.0
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
     - name: verify Chart version matches tag version
       run: |-
         GO111MODULE=on go get github.com/mikefarah/yq/v2
