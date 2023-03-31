@@ -1,38 +1,42 @@
 name: hashicorp/waypoint-helm/update-helm-charts-index
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 jobs:
   update-helm-charts-index:
-    if: # GitHub does not currently support regular expressions inside if conditions
-    #         (github.ref == 'refs/tags//^v.*/') && (github.ref != 'refs/heads//.*/')
+    outputs:
+      go-version: ${{ steps.get-go-version.outputs.version }}
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/circleci/golang:1.15.3
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - name: Determine Go version
+        id: get-go-version
+        run: |-
+          echo "Building with Go $(cat ".go-version")"
+          echo "go-version=$(cat ".go-version")" >> "$GITHUB_OUTPUT"
+      - name: Setup Go
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
+        with:
+          go-version: ${{ steps.get-go-version.outputs.go-version }}
       - name: verify Chart version matches tag version
         run: |-
-          GO111MODULE=on go get github.com/mikefarah/yq/v2
-          git_tag=$(echo "${${{ github.ref }}#v}")
+          GO111MODULE=on go install github.com/mikefarah/yq/v2@latest
+          #git_tag=$(echo "${{ github.ref_name }}" | sed 's/v//g')
+          git_tag=0.1.18
           chart_tag=$(yq r Chart.yaml version)
           if [ "${git_tag}" != "${chart_tag}" ]; then
             echo "chart version (${chart_tag}) did not match git version (${git_tag})"
             exit 1
           fi
-      - name: install gh tool
-        run: |-
-          version="2.22.1"
-          curl --show-error --silent --location --output "gh.tar.gz" "https://github.com/cli/cli/releases/download/v${version}/gh_${version}_linux_amd64.tar.gz"
-          tar -xvzf gh.tar.gz && mkdir -p bin && mv "gh_${version}_linux_amd64/bin/gh" bin/
       - name: update helm-charts index
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |-
-          export GITHUB_TOKEN="${HELM_CHARTS_GITHUB_TOKEN}"
-          ./bin/gh workflow run publish-charts.yml \
+          gh workflow run publish-charts.yml \
             --repo hashicorp/helm-charts \
             --ref main \
-            -f SOURCE_TAG="${{ github.ref }}" \
-            -f SOURCE_REPO="${CIRCLE_PROJECT_USERNAME}/${{ github.repository }}"
+            -f SOURCE_TAG="${{ github.ref_name }}" \
+            -f SOURCE_REPO="${{ github.repository_owner }}/${{ github.repository }}"
 permissions:
   contents: read
