@@ -31,12 +31,13 @@ jobs:
           fi
       - name: update helm-charts index
         env:
-          GH_TOKEN: ${{ github.token }}
+          # FIXME: waypoint team to input token
+          GH_TOKEN: ${{ secrets.HELM_CHARTS_GITHUB_TOKEN }}
         run: |-
           gh workflow run publish-charts.yml \
             --repo hashicorp/helm-charts \
             --ref main \
             -f SOURCE_TAG="${{ github.ref_name }}" \
-            -f SOURCE_REPO="${{ github.repository_owner }}/${{ github.repository }}"
+            -f SOURCE_REPO="${{ github.repository }}"
 permissions:
   contents: read
