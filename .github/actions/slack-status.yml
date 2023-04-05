@@ -25,13 +25,8 @@ runs:
         SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       with:
-        payload: '
+        payload: |
           {
-            "attachments": [
-              {
-                "mrkdwn_in": ["text"],
-                "color": "#${{ inputs.block-color }}",
-                "text": "${{ inputs.message }}\n<${{ input.run-url }}|View Workflow>"
-              }
-            ]
-          }'
+            "message": "${{ inputs.message }}",
+            "workflow_run": "${{ input.run-url }}"
+          }
