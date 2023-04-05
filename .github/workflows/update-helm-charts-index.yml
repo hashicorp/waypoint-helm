@@ -1,4 +1,4 @@
-name: hashicorp/waypoint-helm/update-helm-charts-index
+name: update-helm-charts-index
 on:
   push:
     tags:
@@ -21,9 +21,7 @@ jobs:
           go-version: ${{ steps.get-go-version.outputs.go-version }}
       - name: verify Chart version matches tag version
         run: |-
-          GO111MODULE=on go install github.com/mikefarah/yq/v2@latest
-          #git_tag=$(echo "${{ github.ref_name }}" | sed 's/v//g')
-          git_tag=0.1.18
+          git_tag=$(echo "${{ github.ref_name }}" | sed 's/v//g')
           chart_tag=$(yq r Chart.yaml version)
           if [ "${git_tag}" != "${chart_tag}" ]; then
             echo "chart version (${chart_tag}) did not match git version (${git_tag})"
@@ -32,7 +30,6 @@ jobs:
       - name: update helm-charts index
         id: update
         env:
-          # FIXME: waypoint team to input token
           GH_TOKEN: ${{ secrets.HELM_CHARTS_GITHUB_TOKEN }}
         run: |-
           gh workflow run publish-charts.yml \
