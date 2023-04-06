@@ -24,5 +24,5 @@ runs:
         payload: |
           {
             "message": "${{ inputs.message }}",
-            "workflow_run": "${{ input.run-url }}"
+            "workflow_run": "${{ inputs.run-url }}"
           }
