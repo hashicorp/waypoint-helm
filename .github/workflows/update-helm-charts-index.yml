@@ -7,6 +7,9 @@ jobs:
   update-helm-charts-index:
     outputs:
       go-version: ${{ steps.get-go-version.outputs.version }}
+      success-message: ${{ steps.prepare-slack-notification.outputs.success-message }}
+      failure-message: ${{ steps.prepare-slack-notification.outputs.failure-message }}
+      success-boolean: ${{ steps.prepare-slack-notification.outputs.success-boolean }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
@@ -38,25 +41,29 @@ jobs:
             -f SOURCE_TAG="${{ github.ref_name }}" \
             -f SOURCE_REPO="${{ github.repository }}"
       - name: Prepare Slack Notification
-        if: always()
+        id: prepare-slack-notification
         run: |
           case "${{ steps.update.conclusion }}" in
             failure)
-              echo "SLACK_MESSAGE=:red_circle: The vault-helm charts index update failed." >> "$GITHUB_ENV"
-              echo "SLACK_BLOCK_COLOR=ed5c5c" >> "$GITHUB_ENV"
+              echo "success-boolean=false" >> $GITHUB_OUTPUT
               ;;
             success)
-              echo "SLACK_MESSAGE=:tada: The vault-helm charts index update succeeded." >> "$GITHUB_ENV"
-              echo "SLACK_BLOCK_COLOR=1cbf43" >> "$GITHUB_ENV"
+              echo "success-boolean=true" >> $GITHUB_OUTPUT
               ;;
           esac
+          SUCCESS_MESSAGE=":tada: The waypoint-helm charts index update succeeded."
+          FAILURE_MESSAGE=":red_circle: The waypoint-helm charts index update failed."
+          echo "success-message=${SUCCESS_MESSAGE}" >> $GITHUB_OUTPUT
+          echo "failure-message=${FAILURE_MESSAGE}" >> $GITHUB_OUTPUT
       - name: Send Slack Notification
         # note: this will skip Slack notification if the job is skipped or cancelled.
-        if: ${{ (success() || failure()) && env.SLACK_MESSAGE != '' }}
-        uses: ./.github/actions/slack-status
+        if: ${{ (success() || failure()) }}
+        # FIXME: use new composite actions and ensure all inputs / name align
+        uses: hashicorp/actions-send-slack-status@v1
         with:
-          message: ${{ env.SLACK_MESSAGE }}
-          run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          success-message: ${{ steps.prepare-slack-notification.outputs.success-message }}
+          failure-message: ${{ steps.prepare-slack-notification.outputs.failure-message }}
+          success-boolean: ${{ steps.prepare-slack-notification.outputs.success-boolean }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 permissions:
   contents: read
