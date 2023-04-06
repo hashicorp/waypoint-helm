@@ -55,10 +55,8 @@ jobs:
         if: ${{ (success() || failure()) && env.SLACK_MESSAGE != '' }}
         uses: ./.github/actions/slack-status
         with:
-          block-color: ${{ env.SLACK_BLOCK_COLOR }}
           message: ${{ env.SLACK_MESSAGE }}
           run-url: ${{ env.RUN_URL }}
-          # FIXME: waypoint team to input token
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 permissions:
   contents: read

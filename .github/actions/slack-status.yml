@@ -11,10 +11,6 @@ inputs:
   run-url:
     description: Self-referencing RUN
     required: true
-  block-color:
-    description: HEX color code, use `ed5c5c` for failure and `1cbf43` for success status
-    required: false
-    default: 1cbf43
 
 runs:
   using: "composite"
