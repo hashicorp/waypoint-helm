@@ -7,9 +7,6 @@ jobs:
   update-helm-charts-index:
     outputs:
       go-version: ${{ steps.get-go-version.outputs.version }}
-      success-message: ${{ steps.prepare-slack-notification.outputs.success-message }}
-      failure-message: ${{ steps.prepare-slack-notification.outputs.failure-message }}
-      success-boolean: ${{ steps.prepare-slack-notification.outputs.success-boolean }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
@@ -40,30 +37,14 @@ jobs:
             --ref main \
             -f SOURCE_TAG="${{ github.ref_name }}" \
             -f SOURCE_REPO="${{ github.repository }}"
-      - name: Prepare Slack Notification
-        id: prepare-slack-notification
-        run: |
-          case "${{ steps.update.conclusion }}" in
-            failure)
-              echo "success-boolean=false" >> $GITHUB_OUTPUT
-              ;;
-            success)
-              echo "success-boolean=true" >> $GITHUB_OUTPUT
-              ;;
-          esac
-          SUCCESS_MESSAGE=":tada: waypoint-helm charts index update triggered successfully. View the run at https://github.com/hashicorp/helm-charts/actions/workflows/publish-charts.yml"
-          FAILURE_MESSAGE=":red_circle: The waypoint-helm charts index update trigger failed."
-          echo "success-message=${SUCCESS_MESSAGE}" >> $GITHUB_OUTPUT
-          echo "failure-message=${FAILURE_MESSAGE}" >> $GITHUB_OUTPUT
       - name: Send Slack Notification
-        # note: this will skip Slack notification if the job is skipped or cancelled.
-        if: ${{ (success() || failure()) }}
-        # FIXME: use new composite actions and ensure all inputs / name align
+        if: ${{ always() }}
         uses: hashicorp/actions-send-slack-status@v1
         with:
-          success-message: ${{ steps.prepare-slack-notification.outputs.success-message }}
-          failure-message: ${{ steps.prepare-slack-notification.outputs.failure-message }}
-          success-boolean: ${{ steps.prepare-slack-notification.outputs.success-boolean }}
+          # Note: we opt not to send a message on cancellation
+          success-message: ":tada: waypoint-helm charts index update triggered successfully. View the <https://github.com/hashicorp/helm-charts/actions/workflows/publish-charts.yml|run>."
+          failure-message: ":red_circle: The waypoint-helm charts index update trigger failed."
+          status: ${{ steps.update.conclusion }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 permissions:
   contents: read
