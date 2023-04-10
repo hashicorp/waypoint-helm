@@ -5,20 +5,9 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
 jobs:
   update-helm-charts-index:
-    outputs:
-      go-version: ${{ steps.get-go-version.outputs.version }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
-      - name: Determine Go version
-        id: get-go-version
-        run: |-
-          echo "Building with Go $(cat ".go-version")"
-          echo "go-version=$(cat ".go-version")" >> "$GITHUB_OUTPUT"
-      - name: Setup Go
-        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
-        with:
-          go-version: ${{ steps.get-go-version.outputs.go-version }}
       - name: verify Chart version matches tag version
         run: |-
           git_tag=$(echo "${{ github.ref_name }}" | sed 's/v//g')
@@ -39,7 +28,7 @@ jobs:
             -f SOURCE_REPO="${{ github.repository }}"
       - name: Send Slack Notification
         if: ${{ always() }}
-        uses: hashicorp/actions-send-slack-status@v1
+        uses: hashicorp/actions-slack-status@v1
         with:
           # Note: we opt not to send a message on cancellation
           success-message: ":tada: waypoint-helm charts index update triggered successfully. View the <https://github.com/hashicorp/helm-charts/actions/workflows/publish-charts.yml|run>."
