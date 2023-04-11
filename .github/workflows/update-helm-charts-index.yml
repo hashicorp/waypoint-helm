@@ -27,6 +27,7 @@ jobs:
             -f SOURCE_TAG="${{ github.ref_name }}" \
             -f SOURCE_REPO="${{ github.repository }}"
       - name: Send Slack Notification
+        if: ${{ always() }}
         uses: hashicorp/actions-slack-status@v1
         with:
           # Note: we opt not to send a message on cancellation
