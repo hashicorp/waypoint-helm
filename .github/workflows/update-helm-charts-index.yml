@@ -11,7 +11,7 @@ jobs:
       - name: verify Chart version matches tag version
         run: |-
           git_tag=$(echo "${{ github.ref_name }}" | sed 's/v//g')
-          chart_tag=$(yq r Chart.yaml version)
+          chart_tag=$(yq '.version' Chart.yaml)
           if [ "${git_tag}" != "${chart_tag}" ]; then
             echo "chart version (${chart_tag}) did not match git version (${git_tag})"
             exit 1
