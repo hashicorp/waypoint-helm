@@ -48,6 +48,9 @@ spec:
           secret:
             secretName: "{{ .Values.server.certs.secretName }}"
       {{- end }}
+      {{- if .Values.server.extraVolumes }}
+        {{- toYaml .Values.server.extraVolumes | nindent 8 }}
+      {{- end }}
       {{- include "imagePullSecrets" . | nindent 6 }}
       containers:
         - name: waypoint
@@ -84,6 +87,9 @@ spec:
             - name: certs
               mountPath: /secret/certs
               readOnly: true
+          {{- end }}
+          {{- if .Values.server.extraVolumeMounts }}
+            {{- toYaml .Values.server.extraVolumeMounts | nindent 12 }}
           {{- end }}
           ports:
             - containerPort: 9701
