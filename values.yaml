@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 global:
   # Image pull secret to use for registry authentication.
   # Alternatively, the value may be specified as an array of strings.

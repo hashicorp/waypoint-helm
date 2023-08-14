@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 {{- if (and (eq (.Values.server.enabled | toString) "true") .Values.ui.ingress.enabled) -}}
 {{- $fullname := (include "waypoint.fullname" .) -}}
 {{- $extraPaths := .Values.ui.ingress.extraPaths -}}
