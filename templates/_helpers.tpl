@@ -213,6 +213,22 @@ Sets extra service account annotations
 {{- end -}}
 
 {{/*
+Sets extra bootstrap annotations
+*/}}
+{{- define "waypoint.bootstrap.annotations" -}}
+  {{- if .Values.bootstrap.annotations }}
+      annotations:
+        {{- $tp := typeOf .Values.bootstrap.annotations }}
+        {{- if eq $tp "string" }}
+          {{- tpl .Values.bootstrap.annotations . | nindent 8 }}
+        {{- else }}
+          {{- toYaml .Values.bootstrap.annotations | nindent 8 }}
+        {{- end }}
+  {{- end }}
+{{- end -}}
+
+
+{{/*
 imagePullSecrets generates pull secrets from either string or map values.
 A map value must be indexable by the key 'name'.
 */}}
