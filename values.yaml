@@ -222,6 +222,9 @@ runner:
   # ```
   nodeSelector: null
 
+  # Toleration settings for runner
+  tolerations: []
+
   # Definition of the serviceAccount used to by Waypoint static runner.
   # If using on-demand runners (enabled by default), this primarily
   # needs permissions to run tasks.

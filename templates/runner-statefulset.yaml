@@ -154,4 +154,9 @@ spec:
       nodeSelector:
         {{ tpl .Values.runner.nodeSelector . | indent 8 | trim }}
       {{- end }}
+
+      {{- if .Values.runner.tolerations}}
+      tolerations:
+      {{- toYaml .Values.runner.tolerations | nindent 8  }}
+      {{- end}}
 {{ end }}
